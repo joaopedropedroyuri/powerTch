@@ -1,0 +1,137 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Power Tech</title>
+    <link rel="stylesheet" href="style.css" />
+    
+</head>
+<body>
+    <header>
+        <img src="logo.jpeg" alt="logo" width="140" height="144" />
+        <h1>Power Tech</h1>
+        <nav>
+            <ul>
+                <li> <a href="#sobre"class="sobre">Sobre</a></li>
+                <li><a href="#servicos"class="sobre">Serviços</a></li>
+                <li><a href="#contato"class="sobre">Contato</a></li>
+                <li><button id="loginBtn"class="sobre">Login</button></li>
+            </ul>
+     </nav>
+    </header>
+
+    <section id="sobre">
+        <h2>Sobre Nós</h2>
+        <p>Somos uma empresa dedicada a oferecer soluções de qualidade para nossos clientes.
+        Nosso foco é a excelência no atendimento e inovação nos serviços prestados.
+        Trazendo com o nosso aparelho e serviço uma economia maior para nossos crientes.</p>
+    </section>
+
+    <section id="servicos">
+        <h1>Nossos Serviços</h1>
+        <ul>
+            <li><a href="orçamento.htm">serviço 1 - orçamento</a></li>
+            <li>Serviço 2 - Instalação do aparelho</li>
+            <li>Serviço 3 - Manutenção</li>
+            <li>Serviço 4 - Suporte Técnico</li>
+        </ul>
+    </section>
+
+    <section id="contato">
+        <h2>Contato</h2>
+        <p>Email: Power_Tech@gmail.com</p>
+        <p>Telefone: (11) 9454-9685</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Power Tech. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Modal de Login -->
+   <!-- Modal de Login -->
+<div id="loginModal" class="modal" style="display: none; justify-content: center; align-items: center;">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h2 id="login">Login</h2>
+    <form id="loginForm">
+      <label for="username">Usuário:</label>
+      <input type="text" id="username" name="username" required />
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password" required />
+      <button type="submit">Entrar</button>
+    </form>
+    <div style="margin-top: 15px; text-align: center;">
+      <p>Ainda não tem conta?</p>
+      <button id="btnNovoCadastro">Novo Cadastro</button>
+    </div>
+  </div>
+</div>
+
+
+ <script>
+
+ // Elementos
+const loginBtn = document.getElementById('loginBtn');
+const loginModal = document.getElementById('loginModal');
+const closeModal = document.getElementById('closeModal');
+const btnNovoCadastro = document.getElementById('btnNovoCadastro');
+const loginForm = document.getElementById('loginForm');
+
+// Abrir modal ao clicar em "Login"
+loginBtn.addEventListener('click', () => {
+  loginModal.style.display = 'flex';
+});
+
+// Fechar modal ao clicar no X
+closeModal.addEventListener('click', () => {
+  loginModal.style.display = 'none';
+});
+
+// Fechar modal ao clicar fora
+window.addEventListener('click', (e) => {
+  if (e.target === loginModal) {
+    loginModal.style.display = 'none';
+  }
+});
+
+// Login
+loginForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const usuario = document.getElementById('username').value.trim();
+  const senha = document.getElementById('password').value;
+
+  // Tenta buscar usuário cadastrado no localStorage
+  const dadosSalvos = localStorage.getItem(usuario);
+
+  if (dadosSalvos) {
+    const dados = JSON.parse(dadosSalvos);
+
+    if (senha === dados.senha) {
+      localStorage.setItem('usuario', usuario);
+      window.location.href = 'perfil.htm'; // Redireciona para a página padrão
+      return;
+    } else {
+      alert('Senha incorreta.');
+      return;
+    }
+  }
+
+  // Verifica usuários fixos caso não exista no cadastro
+  if (usuario === 'cliente1' && senha === '1234') {
+    localStorage.setItem('usuario', 'cliente1');
+    window.location.href = 'perfil.htm';
+  } else if (usuario === 'cliente2' && senha === '5678') {
+    localStorage.setItem('usuario', 'cliente2');
+    window.location.href = 'perfil.htm';
+  } else {
+    alert('Usuário ou senha incorretos.');
+  }
+});
+
+// Redirecionar para cadastro
+btnNovoCadastro.addEventListener('click', () => {
+  window.location.href = 'cadastro.htm';
+})
+</script>
+</body>
+</html>

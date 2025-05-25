@@ -1,0 +1,150 @@
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel do Cliente</title>
+  <link rel="stylesheet" href="style_cliente.css">
+</head>
+<body>
+	<h1>Bem-vindo à sua área!</h1>
+<div class="dados-container1">
+  <div class="caixa-dado">
+		<h2>Nome da Empresa</h2>
+		<p> <span id="nomeEmpresa"></span> </p>
+  </div>
+
+  <div class="caixa-dado">
+		<h2>Quantidade de Salas</h2>
+		 <button id="abrirModal"><span id="quantSalas"></span></button>
+  </div>
+
+	<div class = "caixa-dado">
+		<h2>Email</h2>
+		<p><span id="email"></span></p> 
+	</div>
+</div>
+
+    <button id="logoutBtn">Sair</button>
+	
+	<div id="modalSalas" class="modal">
+  <div class="modal-conteudo">
+    <span class="fechar" id="fecharModal">&times;</span>
+    <h3>Detalhes das Salas</h3>
+    <button id = "btSalas">mostrar salas   </button>
+    <ul id="listaSalas"></ul>
+	
+  </div>
+</div>
+	
+
+ 
+    <script>
+const usuario = localStorage.getItem('usuario');
+
+if (!usuario) {
+  alert("Você precisa fazer login.");
+  window.location.href = 'index.htm';
+}
+
+// Pega os dados do usuário do localStorage
+const dadosSalvos = localStorage.getItem(usuario);
+
+if (!dadosSalvos) {
+  alert("Dados do usuário não encontrados. Faça login novamente.");
+  localStorage.removeItem('usuario');
+  window.location.href = 'index.htm';
+}
+
+const dados = JSON.parse(dadosSalvos);
+
+// Caso o usuário seja um dos fixos, você pode manter o infoClientes para fallback
+const infoClientesFixos = {
+  cliente1: {
+    nome: "Mineiro funilaria e Pintura",
+    salas: 5,
+    email: "MineiroFP@email.com",
+    sensores: {
+      1: false,
+      2: false,
+      3: true,
+      4: false,
+      5: false
+    }
+  },
+  cliente2: {
+    nome: "TCC_LTDA",
+    salas: 1,
+    email: "TCC_LTDA@email.com",
+    sensores: {
+      1: false
+    }
+  }
+};
+
+// Se dados não tiver sensores, inicializa sensores com todas salas false
+if (!dados.sensores) {
+  dados.sensores = {};
+  for (let i = 1; i <= dados.salas; i++) {
+    dados.sensores[i] = false;
+  }
+}
+
+document.getElementById('nomeEmpresa').textContent = dados.nome;
+document.getElementById('quantSalas').textContent = dados.salas;
+document.getElementById('email').textContent = dados.email;
+
+// Botão logout
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('usuario');
+  window.location.href = 'index.htm';
+});
+
+// Modal
+const abrir = document.getElementById("abrirModal");
+const modal = document.getElementById("modalSalas");
+const fechar = document.getElementById("fecharModal");
+
+abrir.addEventListener("click", () => {
+  mostrarSalas();
+  modal.style.display = "flex";
+});
+
+fechar.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+// Função para exibir as salas com cor
+function mostrarSalas() {
+  const lista = document.getElementById("listaSalas");
+  lista.innerHTML = "";
+
+  for (let i = 1; i <= dados.salas; i++) {
+    const li = document.createElement("li");
+
+    const status = dados.sensores[i] ? "⚠️ Sensor Ativado" : "✅ Normal";
+    li.textContent = `Sala ${i}: ${status}`;
+    li.className = dados.sensores[i] ? "sala-ativada" : "sala-normal";
+
+    lista.appendChild(li);
+  }
+}
+
+// (Opcional) Simulação de sensor ativando a cada 5 segundos aleatoriamente
+setInterval(() => {
+  const salaAleatoria = Math.ceil(Math.random() * dados.salas);
+  const ativar = Math.random() < 0.3; // 30% de chance de ativar
+  dados.sensores[salaAleatoria] = ativar;
+  mostrarSalas();
+
+  // Atualiza o localStorage com o novo estado do sensor
+  localStorage.setItem(usuario, JSON.stringify(dados));
+}, 5000);
+
+
+  </script>
+</body>

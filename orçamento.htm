@@ -1,0 +1,87 @@
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Orçamento</title>
+  <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+  <h1>Orçamento</h1>
+  <table id="orcamento">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Quantidade</th>
+        <th>Preço Unitário (R$)</th>
+        <th>Total (R$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" value="Produto 1"></td>
+        <td><input type="number" value="1" min="1" onchange="atualizarTotal()"></td>
+        <td><input type="number" value="10.00" step="0.01" onchange="atualizarTotal()"></td>
+        <td class="subtotal">10.00</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">Total Geral</td>
+        <td id="total-geral">R$ 10.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button class="add-row" onclick="adicionarLinha()">+ Adicionar item</button>
+  <button onclick="refazerOrcamento()">↺ Refazer Orçamento</button>
+  
+
+  <script>
+    function atualizarTotal() {
+      const linhas = document.querySelectorAll('#orcamento tbody tr');
+      let total = 0;
+
+      linhas.forEach(linha => {
+        const qtd = parseFloat(linha.children[1].querySelector('input').value) || 0;
+        const preco = parseFloat(linha.children[2].querySelector('input').value) || 0;
+        const subtotal = qtd * preco;
+        linha.children[3].textContent = subtotal.toFixed(2);
+        total += subtotal;
+      });
+
+      document.getElementById('total-geral').textContent = `R$ ${total.toFixed(2)}`;
+    }
+
+    function adicionarLinha() {
+      const tabela = document.querySelector('#orcamento tbody');
+      const novaLinha = document.createElement('tr');
+      novaLinha.innerHTML = `
+        <td><input type="text" value="Novo Item"></td>
+        <td><input type="number" value="1" min="1" onchange="atualizarTotal()"></td>
+        <td><input type="number" value="0.00" step="0.01" onchange="atualizarTotal()"></td>
+        <td class="subtotal">0.00</td>
+      `;
+      tabela.appendChild(novaLinha);
+    }
+	
+    function refazerOrcamento() {
+      const tbody = document.querySelector('#orcamento tbody');
+      tbody.innerHTML = ''; // limpa todas as linhas
+
+      // adiciona linha inicial padrão
+      const linhaInicial = document.createElement('tr');
+      linhaInicial.innerHTML = `
+        <td><input type="text" value="Produto 1"></td>
+        <td><input type="number" value="1" min="1" onchange="atualizarTotal()"></td>
+        <td><input type="number" value="10.00" step="0.01" onchange="atualizarTotal()"></td>
+        <td class="subtotal">10.00</td>
+      `;
+      tbody.appendChild(linhaInicial);
+
+      atualizarTotal();
+    }
+
+
+    atualizarTotal(); // Atualiza ao carregar
+  </script>
+</body>
+</html>
